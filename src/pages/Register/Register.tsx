@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom'
 import { getRules, schema, Schema } from '../../utils/rule'
 import Input from '../../components/Input/Input'
 import { yupResolver } from '@hookform/resolvers/yup'
-
-// interface FormData {
-//   email: string
-//   password: string
-//   confirm_password: string
-// }
+import { useMutation } from '@tanstack/react-query'
+import { registerAccount } from '../../apis/auth.api'
+import { omit } from 'lodash'
+import { isAxiosUnprocessableEntityAxiosError } from '../../utils/utils'
+import { ResponseApi } from '../../types/utils.type'
 
 type FormData = Schema
 
@@ -17,28 +16,51 @@ export default function Register() {
     register,
     handleSubmit,
     formState: { errors },
-    getValues
+    setError
   } = useForm<FormData>({ resolver: yupResolver(schema) })
 
-  // const rules = getRules(getValues)
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+  })
 
-  const onSubmit = handleSubmit(
-    (data) => {
-      // console.log('>>>>>>', data)
-    },
-    (error) => {
-      console.log('>>>>>> error', error)
-    }
-  )
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log('Register success:', data)
+        alert('Đăng kí thành công!')
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityAxiosError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+          const formError = error.response?.data.data
+          // C1
+          // if (formError?.email) {
+          //   setError('email', {
+          //     message: formError.email,
+          //     type: 'Server'
+          //   })
+          // }
+          // if (formError?.password) {
+          //   setError('password', {
+          //     message: formError.password,
+          //     type: 'Server'
+          //   })
+          // }
 
-  // // const email = watch('email')
-  // const email = getValues('email')
+          //C2
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+                type: 'Server'
+              })
+            })
+          }
+        }
+      }
+    })
+  })
 
-  // console.log('>>>>>> email', email)
-
-  // console.log(123)
-
-  // console.log('>>>>>>', errors)
   return (
     <div className='bg-orange'>
       <div className='container'>
