@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FloatingPortal, useFloating, FloatingArrow, arrow, offset, shift } from '@floating-ui/react'
+import { FloatingPortal, useFloating, arrow, offset, shift } from '@floating-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const arrowRef = useRef(null)
-  const { x, y, refs, strategy, context } = useFloating({
+  const { x, y, refs, strategy, middlewareData } = useFloating({
     open,
     onOpenChange: setOpen,
     middleware: [shift(), arrow({ element: arrowRef }), offset(0)]
@@ -57,35 +57,31 @@ export default function Header() {
               <AnimatePresence>
                 {open && (
                   <motion.div
-                    key='modal'
-                    initial={{ opacity: 0, transform: 'scale(0)' }}
-                    animate={{ opacity: 1, transform: 'scale(1)' }}
-                    exit={{ opacity: 0, transform: 'scale(0)' }}
                     ref={refs.setFloating}
                     style={{
                       position: strategy,
                       top: y ?? 0,
                       left: x ?? 0,
                       width: 'max-content',
-                      transformOrigin: 'top center'
+                      transformOrigin: `${middlewareData.arrow?.x}px top`
                     }}
+                    initial={{ opacity: 0, transform: 'scale(0)' }}
+                    animate={{ opacity: 1, transform: 'scale(1)' }}
+                    exit={{ opacity: 0, transform: 'scale(0)' }}
+                    transition={{ duration: 0.2 }}
                   >
-                    <div>
-                      <FloatingArrow
-                        ref={arrowRef}
-                        context={context}
-                        fill='white'
-                        stroke='#e5e7eb'
-                        strokeWidth={1}
-                        style={{
-                          top: '-13%'
-                        }}
-                      />
-                      <div className='bg-white rounded-sm flex-col border border-gray-200'>
-                        <div className='flex flex-col py-2 px-3'>
-                          <button className='p-2 px-3 hover:text-orange'>Tiếng Việt</button>
-                          <button className='p-2 px-3 hover:text-orange'>Tiếng Anh</button>
-                        </div>
+                    <span
+                      ref={arrowRef}
+                      className='border-x-transparent border-t-transparent border-b-white border-[11px] absolute translate-y-[-95%] z-10'
+                      style={{
+                        left: middlewareData.arrow?.x,
+                        top: middlewareData.arrow?.y
+                      }}
+                    />
+                    <div className='bg-white relative shadow-md rounded-sm border border-gray-200'>
+                      <div className='flex flex-col py-2 px-3'>
+                        <button className='py-2 px-3 hover:text-orange'>Tiếng Việt</button>
+                        <button className='py-2 px-3 hover:text-orange mt-2'>English</button>
                       </div>
                     </div>
                   </motion.div>
