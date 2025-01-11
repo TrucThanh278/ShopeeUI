@@ -1,18 +1,22 @@
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { LoginSchema, schema } from '../../utils/rule'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { loginAccount } from '../../apis/auth.api'
 import { isAxiosUnprocessableEntityAxiosError } from '../../utils/utils'
-import { ResponseApi } from '../../types/utils.type'
+import { ErrorResponse } from '../../types/utils.type'
 import Input from '../../components/Input/Input'
+import { useContext } from 'react'
+import { AppContext } from '../../contexts/app.context'
 
 type FormData = LoginSchema
 
 const loginSchema = schema.omit(['confirm_password'])
 
 export default function Login() {
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -27,10 +31,11 @@ export default function Login() {
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data, {
       onSuccess: (data) => {
-        console.log('Login success: ', data)
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityAxiosError<ResponseApi<FormData>>(error)) {
+        if (isAxiosUnprocessableEntityAxiosError<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -83,7 +88,7 @@ export default function Login() {
               <div className='flex items-center justify-center mt-8'>
                 <span className='text-slate-400'>Bạn chưa có tài khoản?</span>
                 <Link className='text-red-400 ml-2' to={'/register'}>
-                  Đăng kí
+                  Đăng ký
                 </Link>
               </div>
             </form>

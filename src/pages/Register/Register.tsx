@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getRules, schema, Schema } from '../../utils/rule'
 import Input from '../../components/Input/Input'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -7,11 +7,15 @@ import { useMutation } from '@tanstack/react-query'
 import { registerAccount } from '../../apis/auth.api'
 import { omit } from 'lodash'
 import { isAxiosUnprocessableEntityAxiosError } from '../../utils/utils'
-import { ResponseApi } from '../../types/utils.type'
+import { ErrorResponse } from '../../types/utils.type'
+import { useContext } from 'react'
+import { AppContext } from '../../contexts/app.context'
 
 type FormData = Schema
 
 export default function Register() {
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -27,11 +31,11 @@ export default function Register() {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
-        console.log('Register success:', data)
-        alert('Đăng kí thành công!')
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityAxiosError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityAxiosError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           // C1
           // if (formError?.email) {
@@ -99,7 +103,7 @@ export default function Register() {
                 type='submit'
                 className='mt-2 w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600'
               >
-                Đăng kí
+                Đăng ký
               </button>
               <div className='flex items-center justify-center mt-8'>
                 <span className='text-slate-400'>Bạn đã có tài khoản?</span>
