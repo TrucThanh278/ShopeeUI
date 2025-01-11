@@ -7,6 +7,7 @@ import {
   getAccessTokenFromLocalStorage,
   saveAccessTokenFromLocalStorage
 } from './auth'
+import path from '../constants/path'
 
 class Http {
   instance: AxiosInstance
@@ -37,7 +38,7 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        if (url === '/login' || url === '/register') {
+        if (url === path.login || url === path.register) {
           this.accessToken = (response.data as AuthResponse).data.access_token
           saveAccessTokenFromLocalStorage(this.accessToken)
         } else if (url === '/logout') {

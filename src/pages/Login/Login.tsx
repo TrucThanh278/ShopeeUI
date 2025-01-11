@@ -10,6 +10,7 @@ import Input from '../../components/Input/Input'
 import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
 import Button from '../../components/Button'
+import path from '../../constants/path'
 
 type FormData = LoginSchema
 
@@ -90,7 +91,7 @@ export default function Login() {
               </Button>
               <div className='flex items-center justify-center mt-8'>
                 <span className='text-slate-400'>Bạn chưa có tài khoản?</span>
-                <Link className='text-red-400 ml-2' to={'/register'}>
+                <Link className='text-red-400 ml-2' to={path.register}>
                   Đăng ký
                 </Link>
               </div>
