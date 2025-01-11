@@ -9,6 +9,7 @@ import { ErrorResponse } from '../../types/utils.type'
 import Input from '../../components/Input/Input'
 import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
+import Button from '../../components/Button'
 
 type FormData = LoginSchema
 
@@ -79,12 +80,14 @@ export default function Login() {
                 />
                 <div className='mt-1 text-red-600 text-sm min-h-[1rem]'></div>
               </div>
-              <button
-                className='mt-3 w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600'
+              <Button
+                className='mt-3 w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 relative flex items-center justify-center'
                 type='submit'
+                isLoading={loginAccountMutation.isPending}
+                disabled={loginAccountMutation.isPending}
               >
                 Đăng nhập
-              </button>
+              </Button>
               <div className='flex items-center justify-center mt-8'>
                 <span className='text-slate-400'>Bạn chưa có tài khoản?</span>
                 <Link className='text-red-400 ml-2' to={'/register'}>

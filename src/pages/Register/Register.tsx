@@ -10,6 +10,7 @@ import { isAxiosUnprocessableEntityAxiosError } from '../../utils/utils'
 import { ErrorResponse } from '../../types/utils.type'
 import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
+import Button from '../../components/Button'
 
 type FormData = Schema
 
@@ -99,12 +100,14 @@ export default function Register() {
                 placeholder='Confirm password'
               />
 
-              <button
+              <Button
                 type='submit'
-                className='mt-2 w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600'
+                className='mt-2 w-full text-center py-4 px-2 uppercase bg-red-500 text-white text-sm hover:bg-red-600 flex items-center justify-center'
+                isLoading={registerAccountMutation.isPending}
+                disabled={registerAccountMutation.isPending}
               >
                 Đăng ký
-              </button>
+              </Button>
               <div className='flex items-center justify-center mt-8'>
                 <span className='text-slate-400'>Bạn đã có tài khoản?</span>
                 <Link className='text-red-400 ml-2' to={'/login'}>
