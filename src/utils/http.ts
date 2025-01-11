@@ -5,7 +5,8 @@ import { AuthResponse } from '../types/auth.type'
 import {
   clearAccessTokenFromLocalStorage,
   getAccessTokenFromLocalStorage,
-  saveAccessTokenFromLocalStorage
+  setAccessTokenFromLocalStorage,
+  setProfileToLocalStorage
 } from './auth'
 import path from '../constants/path'
 
@@ -38,9 +39,11 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
+        const data = response.data as AuthResponse
         if (url === path.login || url === path.register) {
-          this.accessToken = (response.data as AuthResponse).data.access_token
-          saveAccessTokenFromLocalStorage(this.accessToken)
+          this.accessToken = data.data.access_token
+          setAccessTokenFromLocalStorage(this.accessToken)
+          setProfileToLocalStorage(data.data.user)
         } else if (url === '/logout') {
           this.accessToken = ''
           clearAccessTokenFromLocalStorage()

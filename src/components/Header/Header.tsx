@@ -7,11 +7,12 @@ import { AppContext } from '../../contexts/app.context'
 import path from '../../constants/path'
 
 export default function Header() {
-  const { isAuthenticated, setIsAuthenticated } = useContext(AppContext)
+  const { isAuthenticated, setIsAuthenticated, profile, setProfile } = useContext(AppContext)
   const logoutMutation = useMutation({
     mutationFn: logoutAccount,
     onSuccess: () => {
       setIsAuthenticated(false)
+      setProfile(null)
     }
   })
   const handleLogout = () => {
@@ -64,7 +65,7 @@ export default function Header() {
               renderPopover={
                 <div className='bg-white  cursor-pointer shadow-md rounded-sm border border-gray-200'>
                   <Link
-                    to={'/profile'}
+                    to={path.profile}
                     className='block py-3 px-3 w-full text-left hover:bg-slate-100 bg-white hover:text-[#00bfa5]'
                   >
                     {' '}
@@ -94,7 +95,7 @@ export default function Header() {
                   src='https://down-vn.img.susercontent.com/file/404943420d31079d3b417ea9ac1f0041_tn'
                 />
               </div>
-              <span>Truc Nguyen</span>
+              <span>{profile?.email}</span>
             </Popover>
           ) : (
             <div className='flex items-center'>
