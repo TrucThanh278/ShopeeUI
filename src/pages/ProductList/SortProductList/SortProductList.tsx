@@ -14,15 +14,11 @@ export default function SortProductList() {
             Bán chạy
           </button>
           <select className='h-8 px-4 capitalize bg-white text-black text-sm hover:bg-white/80 text-left'>
-            <option selected defaultChecked disabled>
+            <option defaultChecked disabled>
               Giá
             </option>
-            <option value='price: asc' selected>
-              Giá: thấp đến cao
-            </option>
-            <option value='price: desc' selected>
-              Giá: cao đến thấp
-            </option>
+            <option value='price: asc'>Giá: thấp đến cao</option>
+            <option value='price: desc'>Giá: cao đến thấp</option>
           </select>
         </div>
         <div className='flex items-center'>

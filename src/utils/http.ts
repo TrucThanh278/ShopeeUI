@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
-import { isAxiosUnprocessableEntityAxiosError } from './utils'
 import { toast } from 'react-toastify'
 import { AuthResponse } from '../types/auth.type'
 import {
